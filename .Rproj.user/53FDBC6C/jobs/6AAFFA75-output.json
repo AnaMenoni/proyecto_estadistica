@@ -1,0 +1,8 @@
+[1,"Installing 'gridExtra' ...\n"]
+[2,"trying URL 'https://cran.rstudio.com/bin/macosx/big-sur-arm64/contrib/4.5/gridExtra_2.3.tgz'\n"]
+[2,"Content type 'application/x-gzip' length 1105625 bytes (1.1 MB)\n================"]
+[2,"="]
+[2,"=================================\ndownloaded 1.1 MB\n\n"]
+[1,"The downloaded binary packages are in\n"]
+[1,"\t/var/folders/w5/r4237v9175jgsj0grkn8tkhr0000gn/T//Rtmp5SCY1U/downloaded_packages\n"]
+[2,"\n\n✔ Package 'gridExtra' successfully installed.\n"]

@@ -3,24 +3,25 @@
     "path": "~/Library/CloudStorage/OneDrive-UniversidaddeMontevideo/FIUM/SemestreVIIFIUM/ProyectoEstadistica/proyecto_estadistica/proyecto_videovigilancia.Rmd",
     "project_path": "proyecto_videovigilancia.Rmd",
     "type": "r_markdown",
-    "hash": "0",
+    "hash": "665298720",
     "contents": "",
     "dirty": false,
     "created": 1777569024995.0,
-    "source_on_save": false,
+    "source_on_save": true,
     "relative_order": 2,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "5,0",
-        "scrollLine": "0"
+        "cursorPosition": "43,3",
+        "scrollLine": "32",
+        "last_setup_crc32": "8ad5804e5395ccd6"
     },
     "folds": "",
-    "lastKnownWriteTime": 1777569024,
+    "lastKnownWriteTime": 1777577059,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1777569024,
+    "last_content_update": 1777577059437,
     "read_only": false,
     "read_only_alternatives": []
 }

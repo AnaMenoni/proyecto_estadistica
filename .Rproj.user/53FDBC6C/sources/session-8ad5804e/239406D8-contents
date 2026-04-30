@@ -1,5 +1,114 @@
 ---
-title: "proyecto_videovigilancia"
+title: "Análisis de Caudal de Video en Sistemas de Videovigilancia"
+author: "Juan Ignacio Cavelli, Ana Menoni, Agustina Pena"
 output: html_document
 ---
+
+# Análisis Exploratorio
+
+```{r setup, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(knitr)
+```
+
+## Exploración inicial de los datos
+
+```{r}
+
+# Cargar datos
+data <- read.csv("datos_telematica_videovigilancia.csv")
+
+cat("Primeras filas del dataset:\n")
+kable(head(data))
+
+cat("\nEstructura de los datos:\n")
+glimpse(data)
+
+cat("\nResumen estadístico:\n")
+summary(data)
+
+```
+
+## Distribución de la variable respuesta
+
+```{r distribucion-respuesta}
+ggplot(data, aes(x = caudal_video_mbps)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 25,
+                 fill = "#2980b9", color = "white", alpha = 0.85) +
+  geom_density(color = "#e74c3c", linewidth = 1) +
+  labs(title = "Distribución del caudal agregado de video",
+       x = "Caudal (Mbps)", y = "Densidad") +
+  theme_minimal()
+```
+
+## Preparación de los datos
+
+```{r limpieza}
+data$resolucion_video   <- factor(data$resolucion_video, 
+                                   levels = c("720p", "1080p", "1440p"), 
+                                   ordered = TRUE)
+
+data$complejidad_escena <- factor(data$complejidad_escena, 
+                                   levels = c("baja", "media", "alta"), 
+                                   ordered = TRUE)
+```
+
+## Relación entre predictores y caudal
+
+```{r scatterplots, fig.height=9}
+data %>%
+  select(camaras_activas, cuadros_por_segundo, compresion_h265_crf,
+         perdida_paquetes_pct, capacidad_uplink_mbps, uso_cpu_nvr_pct,
+         caudal_video_mbps) %>%
+  pivot_longer(-caudal_video_mbps, names_to = "variable", values_to = "valor") %>%
+  ggplot(aes(x = valor, y = caudal_video_mbps)) +
+  geom_point(alpha = 0.4, color = "#2980b9", size = 1.5) +
+  geom_smooth(method = "lm", color = "#e74c3c", se = FALSE) +
+  facet_wrap(~ variable, scales = "free_x", ncol = 2) +
+  labs(title = "Caudal vs predictores numéricos",
+       x = "", y = "Caudal (Mbps)") +
+  theme_minimal()
+```
+
+## Variables categóricas vs caudal
+
+```{r boxplots}
+p1 <- ggplot(data, aes(x = resolucion_video, y = caudal_video_mbps,
+                        fill = resolucion_video)) +
+  geom_boxplot(alpha = 0.8) +
+  labs(title = "Caudal por resolución", x = "", y = "Caudal (Mbps)") +
+  theme_minimal() + theme(legend.position = "none")
+
+p2 <- ggplot(data, aes(x = complejidad_escena, y = caudal_video_mbps,
+                        fill = complejidad_escena)) +
+  geom_boxplot(alpha = 0.8) +
+  labs(title = "Caudal por complejidad", x = "", y = "Caudal (Mbps)") +
+  theme_minimal() + theme(legend.position = "none")
+
+gridExtra::grid.arrange(p1, p2, ncol = 2)
+```
+
+## Correlaciones entre variables numéricas
+
+```{r heatmap-correlaciones}
+data %>%
+  select(where(is.numeric)) %>%
+  cor() %>%
+  as.data.frame() %>%
+  rownames_to_column("var1") %>%
+  pivot_longer(-var1, names_to = "var2", values_to = "correlacion") %>%
+  ggplot(aes(x = var1, y = var2, fill = correlacion)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = round(correlacion, 2)), size = 3) +
+  scale_fill_gradient2(low = "#e74c3c", mid = "white", high = "#2980b9",
+                       midpoint = 0, limits = c(-1, 1)) +
+  scale_x_discrete(limits = rev) +
+  labs(title = "Matriz de correlación", x = "", y = "", fill = "r") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+
+
 
