@@ -9,6 +9,8 @@ output: html_document
 ```{r setup, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(knitr)
+library(lmtest)
+library(car)
 ```
 
 ## Exploración inicial de los datos
@@ -107,6 +109,48 @@ data %>%
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
+## Modelo de regresión lineal múltiple
+
+```{r Construcción de modelo de regresión lineal}
+modelo <- lm(caudal_video_mbps ~ ., data = data)
+summary(modelo)
+
+# Predicciones
+pred <- predict(modelo)
+
+# MSE
+mse <- mean((data$caudal_video_mbps - pred)^2)
+mse
+
+rmse <- sqrt(mse)
+rmse
+summary(data$caudal_video_mbps)
+
+```
+## Diagnóstico del modelo
+
+```{r Diagnóstico del modelo}
+# QQ plot
+qqnorm(residuals(modelo))
+qqline(residuals(modelo), col = "red")
+
+# Shapiro-Wilk
+shapiro.test(residuals(modelo))
+
+# Homocedasticidad
+plot(modelo$fitted.values, residuals(modelo),
+     xlab = "Predichos", ylab = "Residuos")
+abline(h = 0, col = "red")
+
+bptest(modelo)
+
+# Multicolinealidad
+vif(modelo)
+
+```
+
+
 
 
 
